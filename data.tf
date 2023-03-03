@@ -11,3 +11,15 @@ data "aws_ami" "linux2" {
     values = ["amzn2-ami-hvm*"]
   }
 }
+
+# Define IAM policy document
+data "aws_iam_policy_document" "eks_worker_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
