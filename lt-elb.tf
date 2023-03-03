@@ -4,7 +4,7 @@ resource "aws_launch_template" "main" {
   image_id               = "ami-0aa7d40eeae50c9a9"
   instance_type          = "t3.medium"
   user_data              = base64encode(file("userdata.sh"))
-  vpc_security_group_ids = [aws_security_group.private.id]
+  vpc_security_group_ids = [aws_security_group.nodes.id]
   tags = {
     Name = "${values(var.tags)[0]}-Launch-Template"
   }
@@ -28,11 +28,11 @@ resource "aws_alb_target_group" "main" {
   vpc_id   = aws_vpc.main.id
 
   health_check {
-    healthy_threshold = 2
+    healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout = 5
-    interval = 10
-    path = "/"
+    timeout             = 5
+    interval            = 10
+    path                = "/"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_alb_listener_rule" "eks" {
   listener_arn = aws_alb_listener.main.arn
 
   action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_alb_target_group.main.arn
   }
 

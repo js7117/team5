@@ -5,10 +5,17 @@ resource "aws_security_group" "EKS" {
   description = "EKS attached security group for worker nodes"
 
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 0
+    to_port         = 65535
     protocol        = "tcp"
-    security_groups = [aws_security_group.private.id]
+    security_groups = [aws_security_group.nodes.id, aws_security_group.public.id]
+  }
+
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.nodes.id]
   }
 
   egress {
@@ -19,27 +26,20 @@ resource "aws_security_group" "EKS" {
   }
 }
 
-# Create security group for private subnet to public subnet traffic
-resource "aws_security_group" "private" {
-  name        = "${values(var.tags)[0]}-Private-SG"
+# Create security group for node group
+resource "aws_security_group" "nodes" {
+  name        = "${values(var.tags)[0]}-Nodes-SG"
   vpc_id      = aws_vpc.main.id
-  description = "LT attached security group that allows access from public to private subnets"
+  description = "LT attached security group that allows cluster and nodes to communicate"
   tags = {
-    Name = "${values(var.tags)[0]}-Private-SG"
+    Name = "${values(var.tags)[0]}-Nodes-SG"
   }
 
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 0
+    to_port         = 65535
     protocol        = "tcp"
     security_groups = [aws_security_group.public.id]
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
