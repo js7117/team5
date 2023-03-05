@@ -1,19 +1,20 @@
 # Create launch template
 resource "aws_launch_template" "main" {
   name                   = "${values(var.tags)[0]}-Launch-Template"
-  image_id               = "ami-0557a15b87f6559cf"
+  image_id               = data.aws_ssm_parameter.eks_ami.value
   instance_type          = "t3.medium"
-  # user_data              = base64encode(file("userdata.sh"))
+  user_data              = base64encode(file("userdata.sh"))
   vpc_security_group_ids = [aws_security_group.nodes.id]
   tags = {
-    Name = "${values(var.tags)[0]}-Launch-Template"
+    Name                                                 = "${values(var.tags)[0]}-Launch-Template"
+    "kubernetes.io/cluster/${aws_eks_cluster.main.name}" = "owned"
   }
 
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
-      volume_size = 20
-      volume_type = "gp3"
+      volume_size           = 50
+      volume_type           = "gp3"
       delete_on_termination = true
     }
   }

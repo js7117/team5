@@ -3,13 +3,9 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# Define EC2 instance data
-data "aws_ami" "linux2" {
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm*"]
-  }
+# Define EKS node AMI
+data "aws_ssm_parameter" "eks_ami" {
+  name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.main.version}/amazon-linux-2/recommended/image_id"
 }
 
 # Define IAM policy document

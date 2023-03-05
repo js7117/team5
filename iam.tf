@@ -26,25 +26,25 @@ resource "aws_iam_policy" "eks_access_policy" {
     "Statement" = [
       {
         "Effect" = "Allow",
-        "Action": [
-            "eks:ListFargateProfiles",
-            "eks:DescribeNodegroup",
-            "eks:ListNodegroups",
-            "eks:ListUpdates",
-            "eks:AccessKubernetesApi",
-            "eks:ListAddons",
-            "eks:DescribeCluster",
-            "eks:DescribeAddonVersions",
-            "eks:ListClusters",
-            "eks:ListIdentityProviderConfigs",
-            "iam:ListRoles"
+        "Action" : [
+          "eks:ListFargateProfiles",
+          "eks:DescribeNodegroup",
+          "eks:ListNodegroups",
+          "eks:ListUpdates",
+          "eks:AccessKubernetesApi",
+          "eks:ListAddons",
+          "eks:DescribeCluster",
+          "eks:DescribeAddonVersions",
+          "eks:ListClusters",
+          "eks:ListIdentityProviderConfigs",
+          "iam:ListRoles"
         ],
         "Resource" = "*"
       },
       {
-    "Effect": "Allow",
-    "Action": "ssm:GetParameter",
-    "Resource": "arn:aws:ssm:*:257248662189:parameter/*"
+        "Effect" : "Allow",
+        "Action" : "ssm:GetParameter",
+        "Resource" : "arn:aws:ssm:*:257248662189:parameter/*"
       }
     ]
   })
@@ -54,15 +54,15 @@ resource "aws_iam_policy" "cloud_watch" {
   name = "${values(var.tags)[0]}-eks-cloud-watch-policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "cloudwatch:PutMetricData"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "cloudwatch:PutMetricData"
+        ],
+        "Resource" : "*",
+        "Effect" : "Allow"
+      }
     ]
   })
 }
@@ -71,17 +71,17 @@ resource "aws_iam_policy" "elb_perm" {
   name = "${values(var.tags)[0]}-eks-elb-policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "ec2:DescribeAccountAttributes",
-                "ec2:DescribeAddresses",
-                "ec2:DescribeInternetGateways"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ec2:DescribeAccountAttributes",
+          "ec2:DescribeAddresses",
+          "ec2:DescribeInternetGateways"
+        ],
+        "Resource" : "*",
+        "Effect" : "Allow"
+      }
     ]
   })
 }
@@ -103,7 +103,7 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_policy" {
 
 resource "aws_iam_role_policy_attachment" "eks_CSI_policy" {
   policy_arn = "arn:aws:iam::257248662189:policy/AmazonEKS_EFS_CSI_Driver_Policy"
-  role = aws_iam_role.eks.name
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks_access_policy" {
@@ -113,12 +113,12 @@ resource "aws_iam_role_policy_attachment" "eks_access_policy" {
 
 resource "aws_iam_role_policy_attachment" "eks_cloud_watch" {
   policy_arn = aws_iam_policy.cloud_watch.arn
-  role = aws_iam_role.eks.name
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks_elb_perm" {
   policy_arn = aws_iam_policy.elb_perm.arn
-  role = aws_iam_role.eks.name
+  role       = aws_iam_role.eks.name
 }
 
 # Create EKS node group role with appropriate policies
