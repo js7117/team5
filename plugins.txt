@@ -1,0 +1,11 @@
+Amazon Web Services SDK: ALL
+
+Docker
+
+Docker Pipeline
+
+Pipeline: AWS Steps
+
+CloudBees AWS Credentials
+
+Kubernetes CLI

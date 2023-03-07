@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    stages {
+
+        stage('Login and Push'){
+            steps {
+                script{
+                    // Sign into docker, build image, and push image to dockerhub
+                    withDockerRegistry(credentialsId: 'Dker') {
+                        docker.build('jimyywang/flask-app').push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('AWS Commands'){
+            steps {
+                    // Get AWS credentials
+                    sh 'aws sts get-caller-identity'
+            }
+        }
+
+        stage('Kubernetes login') {
+            steps {
+                    sh 'aws eks update-kubeconfig --region us-east-1 --name Byte-Squad-EKS-Cluster'
+                }
+        }
+
+        stage('Create Namespace') {
+            steps {
+                script {
+                        try {
+                            sh 'kubectl apply -f manifest.yaml'
+                            sh 'kubectl rollout restart deployment flask-deployment -n byte-squad-namespace'
+                        } catch (Exception e) {
+                            echo 'Exception occured: ' + e.toString()
+                            echo 'Handle the Exception!'
+                        }
+                    }
+                }
+            }
+        }
+    }
