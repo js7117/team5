@@ -7,23 +7,23 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-deployment
+  name: Flask-deployment
   namespace: byte-squad-namespace
   labels:
-    app: flask
+    app: Flask
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: flask
+      app: Flask
   template:
     metadata:
       labels:
-        app: flask
+        app: Flask
     spec:
       containers:
-      - name: flask-app
-        image: jimyywang/flask-app
+      - name: Flask-app
+        image: jimyywang/Flask-app
         ports:
         - containerPort: 5000
         imagePullPolicy: Always
@@ -32,12 +32,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-service
+  name: Flask-service
   namespace: byte-squad-namespace
 spec:
   type: LoadBalancer
   selector:
-    app: flask
+    app: Flask
   ports:
     - protocol: TCP
       port: 80
