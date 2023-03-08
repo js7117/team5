@@ -6,7 +6,7 @@ app = Flask(__name__)
 def index():
     return 'team 5'
 
-app.run(host='0.0.0.0', port=81)
+app.run(host='0.0.0.0', port=80)
 
 
 
